@@ -8,11 +8,11 @@ import dj_database_url
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = "django-insecure-9ym2wot9%)6k_t3m9@#7ehs=w_)ych0j!@=bebwnb@fs)ovvdb"
+SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY", "your-default-dev-key")
 
-DEBUG = True
+DEBUG = os.environ.get("DEBUG", "False") == "True"
 
-ALLOWED_HOSTS = ["bguess-django.onrender.com", "bguess-django-g8f5.onrender.com", "*"]
+ALLOWED_HOSTS = ["*"]
 
 # Installed apps
 INSTALLED_APPS = [
@@ -36,7 +36,7 @@ INSTALLED_APPS = [
     "cloudinary_storage",
     "apps.users",
     "apps.imgtocode",
-    "apps.subscriptions.apps.SubscriptionsConfig",  # Changed here to load AppConfig
+    "apps.subscriptions.apps.SubscriptionsConfig",
 ]
 
 MIDDLEWARE = [
@@ -73,7 +73,7 @@ WSGI_APPLICATION = "project.wsgi.application"
 
 DATABASES = {
     'default': dj_database_url.config(
-        default='postgresql://bguess_jh5d_user:lqE8QpTs1wDsFdeBArW9HSRFilRZitzi@dpg-cvdusain91rc73bc3m80-a.oregon-postgres.render.com/bguess_jh5d'
+        default=os.environ.get('DATABASE_URL')
     )
 }
 
@@ -97,9 +97,9 @@ MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"
 
 CLOUDINARY_STORAGE = {
-    'CLOUD_NAME': 'de8c7djwu',
-    'API_KEY': '155326426895429',
-    'API_SECRET': 'cgCsEB2moUSKpnP3GGSVKHkMeVY'
+    'CLOUD_NAME': os.environ.get('CLOUDINARY_CLOUD_NAME'),
+    'API_KEY': os.environ.get('CLOUDINARY_API_KEY'),
+    'API_SECRET': os.environ.get('CLOUDINARY_API_SECRET'),
 }
 cloudinary.config(
     cloud_name=CLOUDINARY_STORAGE['CLOUD_NAME'],
@@ -133,23 +133,23 @@ CSRF_TRUSTED_ORIGINS = [
     "http://localhost:1234",
     "https://bguess-django.onrender.com",
     "https://bugess.netlify.app",
-    "https://screentocode-xqu3.onrender.com"
+    "https://screentocode-xqu3.onrender.com",
+    "https://snipscript.ai",
 ]
 
 # Email config
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_HOST_USER = "mainbsl4@gmail.com"
-EMAIL_HOST_PASSWORD = "nmwk umma atdu sosv"
+EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
 EMAIL_PORT = 465
 EMAIL_USE_SSL = True
 
-# STRIPE CONFIGURATION (Live keys hardcoded)
+# Stripe config via env
 STRIPE_MODE = "live"
-
-STRIPE_PUBLISHABLE_KEY = "pk_live_51GSY5LH3tb3qjpqa1ieuDkGggwCy4ehrpOKFgXgQww7jW94YyWGmcphFTsODVDmfhOKDzljS4SrbnP9L8Ue7AP0600I6gNr2rf"
-STRIPE_SECRET_KEY = "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"
-STRIPE_WEBHOOK_SECRET = "whsec_GPzLixYE2nqGrBP7LrFsBsGfZCVv9Jwk"
+STRIPE_PUBLISHABLE_KEY = os.environ.get("STRIPE_PUBLISHABLE_KEY")
+STRIPE_SECRET_KEY = os.environ.get("STRIPE_SECRET_KEY")
+STRIPE_WEBHOOK_SECRET = os.environ.get("STRIPE_WEBHOOK_SECRET")
 
 STRIPE_SUCCESS_URL = "https://snipscript.ai/success"
 STRIPE_CANCEL_URL = "https://snipscript.ai/cancel"
@@ -160,12 +160,3 @@ UNFOLD = {
     "SITE_HEADER": "Admin",
     "SITE_SUBHEADER": "Admin",
 }
-
-
-# --- Render Deployment Config ---
-import os
-
-ALLOWED_HOSTS = ['*']
-
-STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
